@@ -18,7 +18,9 @@
                     <tbody>
                     <tr>
                         <td>
-                            @item.Title
+                            <div style="@(item.IsDone ? "color: green; text-decoration: line-through;" : "color: red")">
+                                @item.Title
+                            </div>
                         </td>
                         <td>
                             <input type="checkbox" @bind="item.IsDone"/>

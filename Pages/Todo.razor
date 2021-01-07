@@ -1,4 +1,5 @@
-﻿@page "/todo"
+﻿@inject TodoList.Data.Repository.IRepository repository;
+@page "/todo"
 
 <div class="container-fluid">
     <div class="row">
@@ -26,7 +27,7 @@
                             <input type="checkbox" @bind="item.IsDone"/>
                         </td>
                         <td>
-                            <button class="btn btn-danger" @onclick="(() => DeleteTodo(item))">Delete</button>
+                            <button class="btn btn-danger" @onclick="(() => DeleteTodo(item.Id))">Delete</button>
                         </td>
                     </tr>
                     </tbody>
@@ -48,20 +49,30 @@
 </div>
 
 @code {
-    private IList<TodoItem> todos = new List<TodoItem>();
-    private string newTodo;
+    private IEnumerable<TodoItem> todos = new List<TodoItem>();
+
+    protected override void OnInitialized()
+    {
+        todos = repository.GetAllItems();
+    }
+
+        private string newTodo;
 
     private void AddTodo()
     {
         if (!string.IsNullOrWhiteSpace(newTodo))
         {
-            todos.Add(new TodoItem { Title = newTodo});
+            //todos.Add(new TodoItem { Title = newTodo});
+
+            repository.AddTodo(newTodo);
+
             newTodo = string.Empty;
         }
     }
 
-    private void DeleteTodo(TodoItem deletedItem)
+    private void DeleteTodo(int id)
     {
-        todos.Remove(deletedItem);
+        repository.DeleteItem(id);
+        //todos.Remove(deletedItem);
     }
 }
